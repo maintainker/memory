@@ -5,12 +5,14 @@ interface UserSuccessResponse {
   access_expire?: number;
   refresh_expire?: number;
 }
-interface UserErrorResponse {
-  success: false;
-  message: string;
-}
-declare type UserResponse = UserSuccessResponse | UserErrorResponse;
+declare type UserResponse = UserSuccessResponse | ErrorResponse;
 declare interface UserRequest {
+  userId: string;
+  password: string;
+}
+
+declare interface SignupRequest {
+  name: string;
   userId: string;
   password: string;
 }

@@ -1,11 +1,13 @@
 import Button from "@/components/Button";
 import Input from "@/components/Input";
 import React, { FormEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { postLogin } from "Shared/api/users/index.api";
 import useUserStore from "Shared/stores/user";
 import styled from "styled-components";
 
 function Home() {
+  const navigate = useNavigate();
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const { setUser } = useUserStore();
@@ -50,7 +52,7 @@ function Home() {
           onClear={() => setPassword("")}
         />
         <BtnContainer>
-          <Button onClick={() => console.log("test2")} type="button" varient="secondary">
+          <Button onClick={() => navigate("/sign-up")} type="button" varient="secondary">
             회원가입
           </Button>
           <Button type="submit">로그인</Button>

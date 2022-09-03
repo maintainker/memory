@@ -12,3 +12,10 @@ export const postLogin = async (body: UserRequest) => {
     alert((error as any).message || "확인되지 않은 에러입니다. 지속되면 개발자에게 문의주세요.");
   }
 };
+
+export const postSignup = async (body: SignupRequest) => {
+  try {
+    const { data, status } = await apiInstant.post("/users/sign-up", body);
+    return { data, status };
+  } catch (error) {}
+};
