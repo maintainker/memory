@@ -11,7 +11,7 @@ interface Props extends Omit<InputHTMLAttributes<HTMLInputElement>, "name"> {
 function Input({ label, name, onClear, error, ...props }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const isValue = inputRef.current?.value && inputRef.current?.value !== "";
-  console.log(error);
+
   return (
     <Container>
       <Label htmlFor={name}>
