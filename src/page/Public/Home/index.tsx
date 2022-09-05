@@ -1,35 +1,45 @@
 import Button from "@/components/Button";
 import Input from "@/components/Input";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React, { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { postLogin } from "Shared/api/users/index.api";
-import useUserStore from "Shared/stores/user";
+import { getUser, postLogin } from "Shared/api/users/index.api";
+// import useUserStore from "Shared/stores/user";
 import styled from "styled-components";
 
 function Home() {
   const navigate = useNavigate();
   const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
-  const { setUser } = useUserStore();
+  const queryClient = useQueryClient();
+  // const { setUser } = useUserStore();
+  const { mutate } = useMutation(
+    async ({ userId, password }: { userId: string; password: string }) => postLogin({ userId, password }),
+    {
+      onSuccess: (data) => {
+        console.log(data);
+        if (data?.success) {
+          console.log(data.access);
+          localStorage.setItem(
+            "memory-user",
+            JSON.stringify({
+              access: data["access"],
+              accessExpire: data["access_expire"],
+              refreshExpire: data["refresh_expire"],
+            }),
+          );
+          console.log(localStorage.getItem("memory-user"));
+        }
+        queryClient.setQueryData(["USER_DATA"], getUser);
+      },
+      onError: (error) => {
+        alert((error as any)?.message || "비정상적인 에러입니다. 지속되면 개발자에게 연락주세요.");
+      },
+    },
+  );
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const userLogin = await postLogin({
-      userId,
-      password,
-    });
-    if (userLogin?.success) {
-      localStorage.setItem(
-        "memory-user",
-        JSON.stringify({
-          access: userLogin.access,
-          accessExpire: userLogin.access_expire,
-          refreshExpire: userLogin.refresh_expire,
-        }),
-      );
-      setUser({ name: userLogin.name, access: userLogin.access });
-    } else {
-      alert(userLogin?.message || "비정상적인 에러입니다. 지속되면 개발자에게 연락주세요.");
-    }
+    mutate({ userId, password });
   };
   return (
     <SigninContainer>

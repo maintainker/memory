@@ -16,24 +16,29 @@ apiInstant.interceptors.request.use(async (config) => {
   const userTokenData = JSON.parse(localStorage.getItem("memory-user") || "{}");
   let accessToken = userTokenData["access"];
   const today = new Date().valueOf();
-  if (userTokenData["accessExpire"] < today && userTokenData["accessExpire"] > today) {
-    const { data: tokenData } = await axios({
-      method: "get",
-      baseURL: appUrl,
-      url: "/users/token",
-    });
-    localStorage.setItem(
-      "memory-user",
-      JSON.stringify({
-        access: tokenData["access"],
-        accessExpire: tokenData["access_expire"],
-        refreshExpire: tokenData["refresh_expire"],
-      }),
-    );
-    accessToken = tokenData["access"];
-  } else if (userTokenData["accessExpire"] < today) {
+  try {
+    if (
+      ((userTokenData["accessExpire"] || 0) < today || !userTokenData["access"]) &&
+      (userTokenData["refreshExpire"] || 0) > today
+    ) {
+      const { data: tokenData } = await axios.get("/users/token");
+      localStorage.setItem(
+        "memory-user",
+        JSON.stringify({
+          access: tokenData["access"],
+          accessExpire: tokenData["access_expire"],
+          refreshExpire: tokenData["refresh_expire"],
+        }),
+      );
+      accessToken = tokenData["access"];
+    } else if (userTokenData["accessExpire"] > today || !userTokenData["access"]) {
+      accessToken = null;
+      console.log("test11");
+    }
+  } catch (error) {
+    console.error(error);
     accessToken = null;
-    localStorage.removeItem("memory-user");
+    console.log("test11");
   }
   if (accessToken) {
     config.headers = {
