@@ -6,7 +6,9 @@ const apiInstant = axios.create({
   baseURL: appUrl,
   timeout: 5000,
   headers: {
+    withCredentials: true,
     "Content-Type": "application/json; charset=utf-8",
+    // "Access-Control-Allow-Origin": "*",
   },
 });
 
@@ -15,7 +17,7 @@ apiInstant.interceptors.request.use(async (config) => {
     // 추후 토큰 로직 추가 예정
     config.headers = {
       ...(config.headers || {}),
-      Authorization: `Bearer ${"token"}`,
+      Authorization: `${"token"}`,
     };
   }
   return config;
