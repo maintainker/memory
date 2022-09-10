@@ -21,8 +21,17 @@ export const postSignup = async (body: SignupRequest) => {
 };
 export const getUser = async () => {
   try {
-    console.log("get");
     const { data } = await apiInstant.get<{ name: string; userId: string }>("/users");
+    return data;
+  } catch (error) {
+    return null;
+  }
+};
+export const getToken = async () => {
+  try {
+    const { data } = await apiInstant.get<{ access: string; access_expire: number; refresh_expire: number }>(
+      "/users/token",
+    );
     return data;
   } catch (error) {
     return null;

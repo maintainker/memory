@@ -1,12 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
-import React from "react";
-import { getUser } from "Shared/api/users/index.api";
+import React, { useEffect } from "react";
+import useUserStore from "Shared/stores/user";
 import { Private, Public } from "./page";
 
 function App() {
-  const { data } = useQuery(["USER_DATA"], getUser, { enabled: false });
-  // const { user } = useUserStore();
-  const isLoggedIn = !!data?.name;
+  const { user, isBoot, boot } = useUserStore();
+  const isLoggedIn = !!user?.access;
+  useEffect(() => {
+    boot();
+  }, [boot]);
+  if (!isBoot) return <div></div>;
   if (!isLoggedIn) return <Public />;
   return <Private />;
 }
