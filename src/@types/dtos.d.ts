@@ -11,4 +11,11 @@ declare namespace DTOS {
       }[];
     }
   }
+  namespace Request {
+    interface CreateAlbum {
+      albumName: string;
+      nickname?: string;
+      password?: string;
+    }
+  }
 }

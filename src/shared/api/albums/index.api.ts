@@ -8,3 +8,11 @@ export const getAlbums = async () => {
     return null;
   }
 };
+
+export const createAlbum = async (body: DTOS.Request.CreateAlbum) => {
+  try {
+    await apiInstant.post("/albums", body);
+  } catch (error) {
+    throw error;
+  }
+};

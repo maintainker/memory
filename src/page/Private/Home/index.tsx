@@ -3,18 +3,39 @@ import TextButton from "@/components/Button/Text";
 import AlbumCard from "@/components/Card/Album";
 import Input from "@/components/Input";
 import SmallModal from "@/components/Modal/Small";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
-import { getAlbums } from "Shared/api/albums/index.api";
+import { createAlbum, getAlbums } from "Shared/api/albums/index.api";
 import styled from "styled-components";
 
 function Home() {
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const { data, isFetched } = useQuery(["USER_ALBUM"], getAlbums);
+  const [albumName, setAlbumName] = useState("");
+  const [albumNickname, setAlbumNickname] = useState("");
+  const { data, isFetched, refetch } = useQuery(["USER_ALBUM"], getAlbums);
   const closeModal = () => {
     setIsOpenModal(false);
   };
-
+  const { mutate } = useMutation(createAlbum, {
+    onSuccess: () => {
+      alert("앨범생성이 완료되었습니다.");
+      refetch();
+      setIsOpenModal(false);
+      setAlbumName("");
+      setAlbumNickname("");
+    },
+    onError(error) {
+      const e = error as any;
+      alert(e.message || e.response?.body?.message || "에러로 인하여 앨범이 생성되지 않았습니다.");
+    },
+  });
+  const onSubmit = () => {
+    const reqBody: DTOS.Request.CreateAlbum = {
+      albumName,
+    };
+    if (albumNickname !== "") reqBody.nickname = albumNickname;
+    mutate(reqBody);
+  };
   return (
     <Container>
       <Header>
@@ -52,8 +73,22 @@ function Home() {
       {isOpenModal && (
         <SmallModal onClose={closeModal}>
           <NewAlbumForm>
-            <Input name="album_name" label="앨범 이름" />
-            <Button>생성하기</Button>
+            <Input
+              value={albumName}
+              onChange={(e) => setAlbumName(e.target.value)}
+              onClear={() => setAlbumName("")}
+              name="album_name"
+              label="앨범 이름"
+            />
+            <Input
+              value={albumNickname}
+              onChange={(e) => setAlbumNickname(e.target.value)}
+              onClear={() => setAlbumNickname("")}
+              name="nickname"
+              label="닉네임"
+              placeholder="비어두면 이름으로 저장됩니다."
+            />
+            <Button onClick={onSubmit}>생성하기</Button>
           </NewAlbumForm>
         </SmallModal>
       )}
