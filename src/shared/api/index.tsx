@@ -26,7 +26,7 @@ apiInstant.interceptors.request.use(async (config) => {
       };
       return config;
     } else if (userTokenData["refreshExpire"] > today) {
-      const { data: tokenData } = await axios.get("/users/token");
+      const { data: tokenData } = await axios.get(appUrl + "/users/token");
       localStorage.setItem(
         "memory-user",
         JSON.stringify({
