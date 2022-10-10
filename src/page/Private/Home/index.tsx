@@ -5,6 +5,7 @@ import Input from "@/components/Input";
 import SmallModal from "@/components/Modal/Small";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
 import { createAlbum, getAlbums } from "Shared/api/albums/index.api";
 import styled from "styled-components";
 
@@ -12,7 +13,8 @@ function Home() {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [albumName, setAlbumName] = useState("");
   const [albumNickname, setAlbumNickname] = useState("");
-  const { data, isFetched, refetch } = useQuery(["USER_ALBUM"], getAlbums);
+  const { data, refetch } = useQuery(["USER_ALBUM"], getAlbums);
+  const navigate = useNavigate();
   const closeModal = () => {
     setIsOpenModal(false);
   };
@@ -66,7 +68,14 @@ function Home() {
       {data && data.list.length > 0 && (
         <CardList>
           {data.list.map((el) => (
-            <AlbumCard key={`album_${el.id}`} item={el} />
+            <AlbumCard
+              onClick={(id) => {
+                console.log(id);
+                navigate(`/album/${id}`);
+              }}
+              key={`album_${el.id}`}
+              item={el}
+            />
           ))}
         </CardList>
       )}

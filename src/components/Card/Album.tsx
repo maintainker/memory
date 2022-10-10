@@ -9,11 +9,12 @@ interface Props {
       name: string;
     };
   };
+  onClick: (id: number) => void;
 }
 function AlbumCard(props: Props) {
-  console.log(props.item);
+  const { onClick } = props;
   return (
-    <Container>
+    <Container onClick={() => onClick(props.item.album.id)}>
       <h3>{props.item.album.name}</h3>
       <Nickname>{props.item.nickname}님</Nickname>
     </Container>
@@ -22,7 +23,8 @@ function AlbumCard(props: Props) {
 
 export default AlbumCard;
 
-const Container = styled.div`
+const Container = styled.a`
+  display: block;
   /* flex: 1; */
   padding: 20px;
   width: 200px;
@@ -30,6 +32,7 @@ const Container = styled.div`
   background: #fff;
   border-radius: 5px;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  cursor: pointer;
   &:hover {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   }

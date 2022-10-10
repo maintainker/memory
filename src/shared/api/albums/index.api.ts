@@ -16,3 +16,12 @@ export const createAlbum = async (body: DTOS.Request.CreateAlbum) => {
     throw error;
   }
 };
+
+export const getAlbumDetail = async (params: DTOS.Request.GetAlbumDetail) => {
+  try {
+    const { data } = await apiInstant.get<DTOS.Response.GetAlbumDetail>("/albums/detail", { params });
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
